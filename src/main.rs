@@ -25,11 +25,11 @@ struct SwitchWindowOperation;
 #[derive(Debug)]
 struct ScrollOperation;
 
-#[derive(Debug)]
-struct SwitchTabOperation;
+// #[derive(Debug)]
+// struct SwitchTabOperation;
 
-#[derive(Debug)]
-struct TypeCodeOperation;
+// #[derive(Debug)]
+// struct TypeCodeOperation;
 
 impl ClickOperation {
     fn new(x: i32, y: i32) -> Self {
@@ -84,17 +84,17 @@ impl Operation for ScrollOperation {
     }
 }
 
-impl Operation for SwitchTabOperation {
-    fn exec(&self, emulator: &mut Enigo, rand_generator: &mut ThreadRng) {
-        println!("Switch tab");
-    }
-}
+// impl Operation for SwitchTabOperation {
+//     fn exec(&self, emulator: &mut Enigo, _rand_generator: &mut ThreadRng) {
+//         println!("Switch tab");
+//     }
+// }
 
-impl Operation for TypeCodeOperation {
-    fn exec(&self, emulator: &mut Enigo, rand_generator: &mut ThreadRng) {
-        println!("Type code");
-    }
-}
+// impl Operation for TypeCodeOperation {
+//     fn exec(&self, emulator: &mut Enigo, _rand_generator: &mut ThreadRng) {
+//         println!("Type code");
+//     }
+// }
 
 const INIT_TIME: u8 = 30;
 const RANGE_BETWEEN_OPERATIONS: Range<u8> = 3..34;
