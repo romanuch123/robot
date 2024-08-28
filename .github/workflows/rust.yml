@@ -1,33 +1,24 @@
-name: Rust
+name: Cargo Build & Test
 
 on:
   push:
-    branches: [ "main" ]
   pull_request:
-    branches: [ "main" ]
 
-env:
+env: 
   CARGO_TERM_COLOR: always
 
 jobs:
-  build:
-    name: Build
+  build_and_test:
+    name: Rust project - latest
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        target:
-          - armv7-unknown-linux-gnueabihf
-          - powerpc64-unknown-linux-gnu
-          - stable-x86_64-pc-windows-gnu
+        toolchain:
+          - stable
+          - beta
+          - nightly
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          target: ${{ matrix.target }}
-          override: true
-      - uses: actions-rs/cargo@v1
-        with:
-          use-cross: true
-          command: build
-          args: --release --target=${{ matrix.target }}
+      - uses: actions/checkout@v4
+      - run: rustup update ${{ matrix.toolchain }} && rustup default ${{ matrix.toolchain }}
+      - run: cargo build --verbose
+      - run: cargo test --verbose
