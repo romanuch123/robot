@@ -96,6 +96,7 @@ impl Operation for SwitchTabOperation {
 
 impl Operation for TypeCodeOperation {
     fn exec(&self, emulator: &mut Enigo, rand_generator: &mut ThreadRng) {
+        let _ = emulator.key(Key::Return, Click);
         let delay_after_operation: u8 = rand_generator.gen_range(RANGE_BETWEEN_CODE_TYPING);
         let code_item_index = rand_generator.gen_range(0..CODE_TEXT.len());
         println!("Type code");
@@ -106,6 +107,12 @@ impl Operation for TypeCodeOperation {
         }
         let _ = emulator.key(Key::Return, Click);
         let _ = emulator.key(Key::Return, Click);
+
+        let _ = emulator.key(Key::Control, Press);
+        let _ = emulator.key(Key::S, Press);
+
+        let _ = emulator.key(Key::Control, Release);
+        let _ = emulator.key(Key::S, Release);
     }
 }
 
@@ -119,7 +126,7 @@ const INIT_TIME: u8 = 10;
 const RANGE_BETWEEN_OPERATIONS: Range<u8> = 1..6;
 const RANGE_BETWEEN_CODE_TYPING: Range<u8> = 1..2;
 const CODE_TEXT: [&str; 9] = [
-    "const getControlsIds = (controls) => controls.map((el) => el.id)",
+    "const getControlsIds = (controls) => controls.map((el) => el.id);",
     "const cleanupValues = (values) => {
         if (isWorkItemsChanged(initialValues.commonControlEvidenceWorkItems, values.commonControlEvidenceWorkItems)) {
         return {
