@@ -95,19 +95,17 @@ impl Operation for SwitchTabOperation {
 }
 
 impl Operation for TypeCodeOperation {
-    fn exec(&self, emulator: &mut Enigo, _rand_generator: &mut ThreadRng) {
+    fn exec(&self, emulator: &mut Enigo, rand_generator: &mut ThreadRng) {
+        let delay_after_operation: u8 = rand_generator.gen_range(RANGE_BETWEEN_CODE_TYPING);
+        let code_item_index = rand_generator.gen_range(0..CODE_TEXT.len());
         println!("Type code");
-        let code = "const result = 5;";
-        let log = "console.log('Debug => result is => ', result);";
+        let code = CODE_TEXT[code_item_index];
         for n in code.chars() {
             let _ = emulator.text(&n.to_string());
+            sleep(Duration::from_secs(delay_after_operation as u64));
         }
         let _ = emulator.key(Key::Return, Click);
         let _ = emulator.key(Key::Return, Click);
-
-        for n in log.chars() {
-            let _ = emulator.text(&n.to_string());
-        }
     }
 }
 
@@ -119,6 +117,62 @@ enum WindowName {
 
 const INIT_TIME: u8 = 10;
 const RANGE_BETWEEN_OPERATIONS: Range<u8> = 1..6;
+const RANGE_BETWEEN_CODE_TYPING: Range<u8> = 1..2;
+const CODE_TEXT: [&str; 9] = [
+    "const getControlsIds = (controls) => controls.map((el) => el.id)",
+    "const cleanupValues = (values) => {
+        if (isWorkItemsChanged(initialValues.commonControlEvidenceWorkItems, values.commonControlEvidenceWorkItems)) {
+        return {
+            ...values,
+            commonControlEvidenceWorkItems: values.commonControlEvidenceWorkItems.map((workItem) => ({
+            workItemId: workItem?.workItemId || workItem,
+            engagementId,
+            })),
+        };
+        }
+        return {
+        ...values,
+        commonControlEvidenceWorkItems: [...control.commonControlEvidenceWorkItems],
+        };
+    };",
+    "const exportControlDesign = () => {
+        meow.raise({
+        name: 'show-modal',
+        modalName: 'CONTROL_DESIGN_EXPORT',
+        modalProps: {
+            steps,
+            activeStepId,
+            originalControl,
+            orderedGitcNonDetailedDesignTestingProcedures,
+            stateValue,
+        },
+        });
+    };",
+    "const moveSubStep = useCallback(
+        handleMoveSubStep({
+        orderedTestingProcedures: orderedGitcNonDetailedDesignTestingProcedures,
+        originalControl,
+        rootStateControl,
+        actions,
+        engagementId,
+        }),
+        [orderedGitcNonDetailedDesignTestingProcedures, originalControl, rootStateControl, actions, engagementId],
+    );",
+    "const contentTopRef = useRef();",
+    "const [stepIndex, setStepIndex] = useState(undefined);",
+    "const [isTabChanged, setIsTabChanged] = useState<boolean>(false);",
+    "const [isSubmitting, setIsSubmitting] = useState(false);",
+    "const handleNavigationRequest = () => {
+        meow.raise({
+        name: 'navigation-requested',
+        context: {
+            route: `/engagement/${engagementId}`,
+            replaceRoute: true,
+        },
+        });
+    };",
+
+];
 
 fn main() {
     sleep(Duration::from_secs(INIT_TIME as u64));
@@ -143,7 +197,7 @@ fn main() {
         Box::new(ScrollOperation),
         Box::new(ClickOperation::new(cursor_location.0, cursor_location.1)),
         Box::new(ClickOperation::new(cursor_location.0, cursor_location.1)),
-        Box::new(SwitchTabOperation), 
+        Box::new(SwitchTabOperation),
         Box::new(TypeCodeOperation), // index 12
     ];
 
@@ -159,10 +213,10 @@ fn main() {
         }
 
         if operation_index == 3 {
-            current_window  = match current_window {
+            current_window = match current_window {
                 WindowName::VsCode => WindowName::Browser,
                 WindowName::Browser => WindowName::VsCode,
-            } 
+            }
         }
 
         let delay_after_operation: u8 = rng.gen_range(RANGE_BETWEEN_OPERATIONS);
